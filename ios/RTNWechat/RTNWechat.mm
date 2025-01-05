@@ -255,7 +255,7 @@ RCT_EXPORT_METHOD(shareMiniProgram:
     object.userName = params[@"userName"];
     object.path = params[@"path"];
     object.withShareTicket = params[@"withShareTicket"];
-    object.miniprogramType = (WXMiniProgramType) [params[@"miniprogramType"] unsignedIntValue];
+    object.miniProgramType = (WXMiniProgramType) [params[@"miniprogramType"] unsignedIntValue];
     
     WXMediaMessage *message = [WXMediaMessage message];
     message.title = params[@"title"];
@@ -341,7 +341,7 @@ RCT_EXPORT_METHOD(launchMiniProgram:
     
     req.userName = [params valueForKey:@"userName"];
     req.path = [params valueForKey:@"path"];
-    req.miniprogramType = (WXMiniProgramType)[[params valueForKey:@"miniprogramType"] unsignedIntValue];
+    req.miniProgramType = (WXMiniProgramType)[[params valueForKey:@"miniprogramType"] unsignedIntValue];
     
     [WXApi sendReq:req completion:^(BOOL success){
         callback(@[[NSNumber numberWithBool:!success]]);
