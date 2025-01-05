@@ -136,7 +136,7 @@ export const shareWebpage = (request: {
 export const shareMiniProgram = (request: {
   userName: string;
   path: string;
-  miniprogramType: number;
+  miniProgramType: number;
   webpageUrl: string;
   withShareTicket?: boolean;
   title?: string;
