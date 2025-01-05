@@ -142,6 +142,7 @@ export const shareMiniProgram = (request: {
   title?: string;
   description?: string;
   coverUrl?: string;
+  scene: number;
 }) => {
   assertRegisteration('shareMiniProgram');
 
