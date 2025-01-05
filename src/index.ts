@@ -207,12 +207,12 @@ export const openCustomerService = (request: {corpid: string; url: string}) => {
 export const launchMiniProgram = (request: {
   userName: string;
   path: string;
-  miniProgramType: number;
+  miniprogramType: number;
   onNavBack?: (res: LaunchMiniProgramResponse) => void;
 }) => {
   assertRegisteration('launchMiniProgram');
 
-  request.miniProgramType = +request.miniProgramType;
+  request.miniprogramType = +request.miniprogramType;
 
   const fn = promisifyNativeFunction<Promise<boolean>>(
     NativeModule.launchMiniProgram,

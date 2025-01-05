@@ -289,12 +289,12 @@ public class NativeWechatModuleImpl implements IWXAPIEventHandler {
     String description = request.getString("description");
     String coverUrl = request.getString("coverUrl");
     boolean withShareTicket = request.getBoolean("withShareTicket");
-    int miniProgramType = request.getInt("miniProgramType");
+    int miniprogramType = request.getInt("miniprogramType");
     int scene = request.getInt("scene");
 
     WXMiniProgramObject miniProgramObj = new WXMiniProgramObject();
     miniProgramObj.webpageUrl = webpageUrl;
-    miniProgramObj.miniprogramType = miniProgramType;
+    miniProgramObj.miniprogramType = miniprogramType;
     miniProgramObj.userName = userName;
     miniProgramObj.path = path;
     miniProgramObj.withShareTicket = withShareTicket;
@@ -364,12 +364,12 @@ public class NativeWechatModuleImpl implements IWXAPIEventHandler {
   public void launchMiniProgram(ReadableMap request, Callback callback) {
     String userName = request.getString("userName");
     String path = request.getString("path");
-    int miniProgramType = request.getInt("miniProgramType");
+    int miniprogramType = request.getInt("miniprogramType");
 
     WXLaunchMiniProgram.Req req = new WXLaunchMiniProgram.Req();
     req.userName = userName;
     req.path = path;
-    req.miniprogramType = miniProgramType;
+    req.miniprogramType = miniprogramType;
 
     callback.invoke(wxApi.sendReq(req) ? null : true);
   }
