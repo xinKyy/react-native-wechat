@@ -145,7 +145,7 @@ RCT_EXPORT_METHOD(shareImage:
         imageObject.imageData = data;
         
         WXMediaMessage *message = [WXMediaMessage message];
-        message.thumbData = data;
+        message.thumbData = [RTNWechatUtils compressImage:data toByte:32768];;
         message.mediaObject = imageObject;
         
         SendMessageToWXReq *req = [[SendMessageToWXReq alloc] init];
