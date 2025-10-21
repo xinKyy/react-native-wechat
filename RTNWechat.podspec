@@ -31,7 +31,8 @@ Pod::Spec.new do |s|
     s.dependency "RCT-Folly"
     s.dependency "RCTRequired"
     s.dependency "RCTTypeSafety"
-    s.dependency "ReactCommon/turbomodule/core"
+    # 删除新架构支持 只保留旧架构
+    # s.dependency "ReactCommon/turbomodule/core"
 end
 
 end
