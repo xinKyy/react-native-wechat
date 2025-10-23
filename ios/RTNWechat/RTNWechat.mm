@@ -1,5 +1,5 @@
 #import "RTNWechat.h"
-#import "WXApiObject.h"
+#import <WechatOpenSDK/WXApiObject.h>
 #import "RTNWechatUtils.h"
 #import "RTNWechatRespDataHelper.h"
 
@@ -19,7 +19,7 @@
     if(self = [super init]){
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleOpenURL:) name:@"RCTOpenURLNotification" object:nil];
     }
-          
+
     return self;
 }
 
@@ -31,7 +31,7 @@
 - (BOOL)handleOpenURL: (NSNotification *)notification
 {
     NSDictionary* userInfo = notification.userInfo;
-        
+
     return [WXApi handleOpenURL:[NSURL URLWithString: userInfo[@"url"]] delegate:self];
 }
 
@@ -61,9 +61,9 @@ RCT_EXPORT_METHOD(registerApp:
             NSLog([NSString stringWithFormat:@"%@%@: ", logPrefix, @" %@"], log);
         }];
     }
-    
+
     self.appid = appid;
-        
+
     [WXApi registerApp:appid universalLink:universalLink];
 }
 
@@ -72,7 +72,7 @@ RCT_EXPORT_METHOD(checkUniversalLinkReady:
                  )
 {
     __block BOOL success = YES;
-    
+
     [WXApi checkUniversalLinkReady:^(WXULCheckStep step, WXCheckULStepResult * _Nonnull result) {
         if(result.success){
             if(step == WXULCheckStepFinal){
@@ -112,7 +112,7 @@ RCT_EXPORT_METHOD(sendAuthRequest:
 
     req.scope = [params valueForKey:@"scope"];
     req.state = [params valueForKey:@"state"];
-    
+
     [WXApi sendReq:req completion:^(BOOL success){
         callback(@[[NSNumber numberWithBool:!success]]);
     }];}
@@ -127,7 +127,7 @@ RCT_EXPORT_METHOD(shareText:
     req.bText = YES;
     req.text = [params valueForKey:@"text"];
     req.scene = [[params valueForKey:@"scene"] unsignedIntValue];
-    
+
     [WXApi sendReq:req completion:^(BOOL success){
         callback(@[[NSNumber numberWithBool:!success]]);
     }];
@@ -139,21 +139,21 @@ RCT_EXPORT_METHOD(shareImage:
                   )
 {
     NSURL *url = [NSURL URLWithString:[params valueForKey:@"src"]];
-        
+
     [RTNWechatUtils downloadFile:url onSuccess:^(NSData * _Nullable data) {
         WXImageObject *imageObject = [WXImageObject object];
         imageObject.imageData = data;
-        
+
         WXMediaMessage *message = [WXMediaMessage message];
         message.thumbData = [RTNWechatUtils compressImage:data toByte:32768];;
         message.mediaObject = imageObject;
-        
+
         SendMessageToWXReq *req = [[SendMessageToWXReq alloc] init];
 
         req.bText = NO;
         req.scene = [[params valueForKey:@"scene"] unsignedIntValue];
         req.message = message;
-        
+
         [WXApi sendReq:req completion:^(BOOL success){
             callback(@[[NSNumber numberWithBool:!success]]);
         }];
@@ -170,30 +170,30 @@ RCT_EXPORT_METHOD(shareVideo:
     WXVideoObject *videoObj = [WXVideoObject object];
     videoObj.videoUrl = params[@"videoUrl"];
     videoObj.videoLowBandUrl = params[@"videoLowBandUrl"];
-    
+
     WXMediaMessage *message = [WXMediaMessage message];
     message.title = params[@"title"];
     message.description = params[@"description"];
     message.mediaObject = videoObj;
-    
+
     void (^onCoverDownloaded)(NSData * _Nullable data) = ^void(NSData * _Nullable data){
         if(data){
             [message setThumbData:data];
         }
-        
+
         SendMessageToWXReq *req = [[SendMessageToWXReq alloc] init];
         req.bText = NO;
         req.message = message;
         req.scene = [params[@"scene"] unsignedIntValue];
-        
+
         [WXApi sendReq:req completion:^(BOOL success){
             callback(@[[NSNumber numberWithBool:!success]]);
         }];
     };
-    
+
     if(params[@"coverUrl"] != nil && [params[@"coverUrl"] length]){
         NSURL *url = [NSURL URLWithString:params[@"coverUrl"]];
-        
+
         [RTNWechatUtils downloadFile:url onSuccess:^(NSData * _Nullable data) {
             onCoverDownloaded(data);
         } onError:^(NSError *error) {
@@ -211,17 +211,17 @@ RCT_EXPORT_METHOD(shareWebpage:
 {
     WXWebpageObject *webpageObj = [WXWebpageObject object];
     webpageObj.webpageUrl = params[@"webpageUrl"];
-    
+
     WXMediaMessage *message = [WXMediaMessage message];
     message.title = params[@"title"];
     message.description = params[@"description"];;
     message.mediaObject = webpageObj;
-    
+
     void (^onCoverDownloaded)(NSData * _Nullable data) = ^void(NSData * _Nullable data){
         if(data){
             [message setThumbData:data];
         }
-        
+
         SendMessageToWXReq *req = [[SendMessageToWXReq alloc] init];
         req.bText = NO;
         req.message = message;
@@ -231,10 +231,10 @@ RCT_EXPORT_METHOD(shareWebpage:
             callback(@[[NSNumber numberWithBool:!success]]);
         }];
     };
-        
+
     if(params[@"coverUrl"] != nil && [params[@"coverUrl"] length]){
         NSURL *url = [NSURL URLWithString:params[@"coverUrl"]];
-        
+
         [RTNWechatUtils downloadFile:url onSuccess:^(NSData * _Nullable data) {
             onCoverDownloaded(data);
         } onError:^(NSError *error) {
@@ -256,37 +256,37 @@ RCT_EXPORT_METHOD(shareMiniProgram:
     object.path = params[@"path"];
     object.withShareTicket = params[@"withShareTicket"];
     object.miniProgramType = (WXMiniProgramType) [params[@"miniprogramType"] unsignedIntValue];
-    
+
     WXMediaMessage *message = [WXMediaMessage message];
     message.title = params[@"title"];
     message.description = params[@"description"];
     message.mediaObject = object;
-    
+
     void (^onCoverDownloaded)(NSData * _Nullable data) = ^void(NSData * _Nullable data){
         if(data){
             NSInteger size = [data length] / 1024;
-            
+
             if(size > 128){
                 return callback(@[@1, [NSString stringWithFormat:@"The maximum size of cover image is 128kb while the passing one is %zd%% kb", size]]);
             }
-            
+
             [message setThumbData:data];
             [object setHdImageData:data];
         }
-        
+
         SendMessageToWXReq *req = [[SendMessageToWXReq alloc] init];
         req.bText = NO;
         req.scene = [params[@"scene"] unsignedIntValue];
         req.message = message;
-        
-        [WXApi sendReq:req completion:^(BOOL success){            
+
+        [WXApi sendReq:req completion:^(BOOL success){
             callback(@[[NSNumber numberWithBool:!success]]);
         }];
     };
-    
+
     if(params[@"coverUrl"] != nil && [params[@"coverUrl"] length]){
         NSURL *url = [NSURL URLWithString:params[@"coverUrl"]];
-        
+
         [RTNWechatUtils downloadFile:url onSuccess:^(NSData * _Nullable data) {
             onCoverDownloaded(data);
         } onError:^(NSError *error) {
@@ -303,14 +303,14 @@ RCT_EXPORT_METHOD(requestPayment:
                   )
 {
     PayReq *request = [[PayReq alloc] init];
-    
+
     request.partnerId = [params valueForKey:@"partnerId"];
     request.prepayId = [params valueForKey:@"prepayId"];
     request.package = @"Sign=WXPay";
     request.nonceStr = [params valueForKey:@"nonceStr"];
     request.timeStamp = UInt32([[params valueForKey:@"timeStamp"] unsignedIntValue]);
     request.sign = [params valueForKey:@"sign"];
-    
+
     [WXApi sendReq:request completion:^(BOOL success){
         callback(@[[NSNumber numberWithBool:!success]]);
     }];
@@ -322,7 +322,7 @@ RCT_EXPORT_METHOD(requestSubscribeMessage:
                   )
 {
     WXSubscribeMsgReq *req = [[WXSubscribeMsgReq alloc] init];
-    
+
     req.scene = [[params valueForKey:@"scene"] unsignedIntValue];
     req.templateId = [params valueForKey:@"templateId"];
     req.reserved = [params valueForKey:@"reserved"];
@@ -338,11 +338,11 @@ RCT_EXPORT_METHOD(launchMiniProgram:
                   )
 {
     WXLaunchMiniProgramReq *req = [WXLaunchMiniProgramReq object];
-    
+
     req.userName = [params valueForKey:@"userName"];
     req.path = [params valueForKey:@"path"];
     req.miniProgramType = (WXMiniProgramType)[[params valueForKey:@"miniprogramType"] unsignedIntValue];
-    
+
     [WXApi sendReq:req completion:^(BOOL success){
         callback(@[[NSNumber numberWithBool:!success]]);
     }];
@@ -354,10 +354,10 @@ RCT_EXPORT_METHOD(openCustomerService:
                   )
 {
     WXOpenCustomerServiceReq *req = [[WXOpenCustomerServiceReq alloc] init];
-    
+
     req.corpid = [params valueForKey:@"corpid"];
     req.url = [params valueForKey:@"url"];
-    
+
     [WXApi sendReq:req completion:^(BOOL success){
         callback(@[[NSNumber numberWithBool:!success]]);
     }];
@@ -382,7 +382,7 @@ RCT_EXPORT_METHOD(openCustomerService:
 
 - (void)onResp:(BaseResp *)baseResp{
     NSDictionary* convertedData = [RTNWechatRespDataHelper downcastResp:baseResp];
-    
+
     [self sendEventWithName:@"NativeWechat_Response" body:convertedData];
 }
 
