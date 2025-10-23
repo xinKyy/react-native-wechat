@@ -1,14 +1,23 @@
 import {defineConfig, UserConfig} from 'vite';
 import {resolve} from 'path';
 import react from '@vitejs/plugin-react-swc';
-import typescript from '@rollup/plugin-typescript';
+import dts from 'vite-plugin-dts';
 
 /**
  * @description Build Config
  */
 const build_as_lib: UserConfig = {
   base: './',
-  plugins: [react(), typescript()],
+  plugins: [
+    react(),
+    dts({
+      insertTypesEntry: true,
+      include: ['src/**/*'],
+      outDir: 'dist',
+      copyDtsFiles: true,
+      rollupTypes: true,
+    }),
+  ],
   build: {
     lib: {
       name: 'native-wechat',

@@ -1,40 +1,12 @@
-import { TurboModuleRegistry as v, NativeModules as y, NativeEventEmitter as P } from "react-native";
-import { useState as b, useEffect as w } from "react";
-function M(e, t, n, r) {
-  function s(a) {
-    return a instanceof n ? a : new n(function(h) {
-      h(a);
-    });
-  }
-  return new (n || (n = Promise))(function(a, h) {
-    function m(u) {
-      try {
-        l(r.next(u));
-      } catch (d) {
-        h(d);
-      }
-    }
-    function g(u) {
-      try {
-        l(r.throw(u));
-      } catch (d) {
-        h(d);
-      }
-    }
-    function l(u) {
-      u.done ? a(u.value) : s(u.value).then(m, g);
-    }
-    l((r = r.apply(e, t || [])).next());
-  });
-}
-class W {
+var f = Object.defineProperty;
+var g = (e, t, n) => t in e ? f(e, t, { enumerable: !0, configurable: !0, writable: !0, value: n }) : e[t] = n;
+var l = (e, t, n) => (g(e, typeof t != "symbol" ? t + "" : t, n), n);
+import { TurboModuleRegistry as d, NativeModules as m, NativeEventEmitter as p } from "react-native";
+import { useState as v, useEffect as P } from "react";
+class M {
   constructor() {
-    Object.defineProperty(this, "handlers", {
-      enumerable: !0,
-      configurable: !0,
-      writable: !0,
-      value: void 0
-    }), this.handlers = /* @__PURE__ */ new Map();
+    l(this, "handlers");
+    this.handlers = /* @__PURE__ */ new Map();
   }
   getQueue(t) {
     const n = this.handlers.get(t);
@@ -51,72 +23,91 @@ class W {
     this.handlers.set(t, []);
   }
   dispatch(t, ...n) {
-    this.getQueue(t).forEach((s) => s(...n)), this.clear(t);
+    this.getQueue(t).forEach((a) => a(...n)), this.clear(t);
   }
 }
-const i = (e) => (...t) => new Promise((n, r) => {
-  e(...t, (s, a) => {
-    s ? r(a) : n(a);
+const o = (e) => (...t) => new Promise((n, r) => {
+  e(...t, (a, i) => {
+    a ? r(i) : n(i);
   });
-}), { Wechat: E } = y, o = v.get("Wechat") || E, q = () => {
-  const [e, t] = b(!1);
-  return w(() => {
-    R().then(() => t(!0)).catch(() => t(!1));
+}), { Wechat: W } = m, s = d.get("Wechat") || W, E = () => {
+  const [e, t] = v(!1);
+  return P(() => {
+    b().then(() => t(!0)).catch(() => t(!1));
   }, []), e;
-}, f = new W();
-let p = !1;
-const S = (e) => new Error(`[Native Wechat]: (${e.errorCode}) ${e.errorStr}`), c = (e) => {
-  if (!p)
+}, u = new M();
+let h = !1;
+const y = (e) => new Error(`[Native Wechat]: (${e.errorCode}) ${e.errorStr}`), c = (e) => {
+  if (!h)
     throw new Error(`Please register SDK before invoking ${e}`);
-}, C = () => i(o.checkUniversalLinkReady)(), k = (e) => {
-  p || (o.registerApp(e), p = !0);
-  const n = new P(o).addListener("NativeWechat_Response", (r) => {
-    const s = r.errorCode ? S(r) : null;
-    f.dispatch(r.type, s, r);
-  });
+}, N = () => o(
+  s.checkUniversalLinkReady
+)(), I = (e) => {
+  h || (s.registerApp(e), h = !0);
+  const n = new p(s).addListener(
+    "NativeWechat_Response",
+    (r) => {
+      const a = r.errorCode ? y(r) : null;
+      u.dispatch(r.type, a, r);
+    }
+  );
   return () => n.remove();
-}, R = () => i(o.isWechatInstalled)(), x = (e = {
+}, b = () => o(s.isWechatInstalled)(), C = (e = {
   scope: "snsapi_userinfo",
   state: ""
 }) => {
   c("sendAuthRequest");
-  const t = i(o.sendAuthRequest);
+  const t = o(
+    s.sendAuthRequest
+  );
   return new Promise((n, r) => {
-    t(e).catch(r), f.once("SendAuthResp", (s, a) => s ? r(s) : n(a));
+    t(e).catch(r), u.once("SendAuthResp", (a, i) => a ? r(a) : n(i));
   });
-}, A = (e) => (c("shareText"), i(o.shareText)(e)), T = (e) => (c("shareImage"), i(o.shareImage)(e)), _ = (e) => (c("shareVideo"), i(o.shareVideo)(e)), L = (e) => (c("shareWebpage"), i(o.shareWebpage)(e)), Q = (e) => (c("shareMiniProgram"), i(o.shareMiniProgram)(e)), V = (e) => {
+}, k = (e) => (c("shareText"), o(s.shareText)(e)), A = (e) => (c("shareImage"), o(s.shareImage)(e)), T = (e) => (c("shareVideo"), o(s.shareVideo)(e)), q = (e) => (c("shareWebpage"), o(
+  s.shareWebpage
+)(e)), x = (e) => (c("shareMiniProgram"), o(
+  s.shareMiniProgram
+)(e)), L = (e) => {
   c("requestPayment");
-  const t = i(o.requestPayment);
-  return new Promise((n, r) => M(void 0, void 0, void 0, function* () {
-    t(e).catch(r), f.once("PayResp", (s, a) => s ? r(s) : n(a));
-  }));
-}, $ = (e) => {
+  const t = o(
+    s.requestPayment
+  );
+  return new Promise(async (n, r) => {
+    t(e).catch(r), u.once("PayResp", (a, i) => a ? r(a) : n(i));
+  });
+}, Q = (e) => {
   c("requestSubscribeMessage");
-  const t = i(o.requestSubscribeMessage);
+  const t = o(
+    s.requestSubscribeMessage
+  );
   return e.scene = +e.scene, t(e);
-}, U = (e) => (c("openCustomerService"), i(o.openCustomerService)(e)), B = (e) => {
-  c("launchMiniProgram"), e.miniProgramType = +e.miniProgramType;
-  const t = i(o.launchMiniProgram);
-  return f.once("WXLaunchMiniProgramResp", (n, r) => {
-    var s;
+}, V = (e) => (c("openCustomerService"), o(
+  s.openCustomerService
+)(e)), $ = (e) => {
+  c("launchMiniProgram"), e.miniprogramType = +e.miniprogramType;
+  const t = o(
+    s.launchMiniProgram
+  );
+  return u.once("WXLaunchMiniProgramResp", (n, r) => {
+    var a;
     if (!n)
-      return (s = e.onNavBack) === null || s === void 0 ? void 0 : s.call(e, r);
+      return (a = e.onNavBack) == null ? void 0 : a.call(e, r);
   }), t(e);
-}, D = o.getConstants();
+}, U = s.getConstants();
 export {
-  D as NativeWechatConstants,
-  C as checkUniversalLinkReady,
-  R as isWechatInstalled,
-  B as launchMiniProgram,
-  U as openCustomerService,
-  k as registerApp,
-  V as requestPayment,
-  $ as requestSubscribeMessage,
-  x as sendAuthRequest,
-  T as shareImage,
-  Q as shareMiniProgram,
-  A as shareText,
-  _ as shareVideo,
-  L as shareWebpage,
-  q as useWechatInstalled
+  U as NativeWechatConstants,
+  N as checkUniversalLinkReady,
+  b as isWechatInstalled,
+  $ as launchMiniProgram,
+  V as openCustomerService,
+  I as registerApp,
+  L as requestPayment,
+  Q as requestSubscribeMessage,
+  C as sendAuthRequest,
+  A as shareImage,
+  x as shareMiniProgram,
+  k as shareText,
+  T as shareVideo,
+  q as shareWebpage,
+  E as useWechatInstalled
 };

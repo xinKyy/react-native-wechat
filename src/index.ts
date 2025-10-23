@@ -10,6 +10,7 @@ import {
 } from './typing';
 import NativeModule from './NativeWechat';
 export * from './hooks';
+export * from './typing';
 
 const notification = new Notification();
 

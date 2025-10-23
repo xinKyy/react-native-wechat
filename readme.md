@@ -86,6 +86,73 @@ export type NativeWechatResponse<T = Record<string, unknown>> = {
 };
 ```
 
+# TypeScript Support
+
+Native WeChat has full TypeScript support with comprehensive type definitions. All functions and types are exported, providing excellent IntelliSense and type checking.
+
+## Available Types
+
+The library exports all necessary types for your use:
+
+```typescript
+import {
+  // Functions
+  registerApp,
+  sendAuthRequest,
+  shareWebpage,
+  isWechatInstalled,
+  launchMiniProgram,
+  requestPayment,
+  // ... and more
+  
+  // Types
+  NativeWechatResponse,
+  SendAuthRequestResponse,
+  LaunchMiniProgramResponse,
+  UniversalLinkCheckingResponse,
+  NativeWechatModuleConstants,
+  WechatShareScene,
+  WechatMiniprogramType,
+  Recordable,
+  
+  // Constants
+  NativeWechatConstants,
+  
+  // React Hooks
+  useWechatInstalled,
+} from '@xinkyy/react-native-wechat';
+```
+
+## Type Usage Example
+
+```typescript
+import {
+  sendAuthRequest,
+  SendAuthRequestResponse,
+  NativeWechatResponse,
+} from '@xinkyy/react-native-wechat';
+
+async function handleWechatAuth() {
+  try {
+    // The return type is automatically inferred as SendAuthRequestResponse
+    const result: SendAuthRequestResponse = await sendAuthRequest({
+      scope: 'snsapi_userinfo',
+      state: 'app-state',
+    });
+    
+    // Access typed response data
+    const code: string = result.data.code;
+    const country: string = result.data.country;
+    
+    return code;
+  } catch (error) {
+    console.error('Wechat auth failed:', error);
+  }
+}
+```
+
+All API functions have complete type definitions, so your IDE will provide autocomplete suggestions and catch type errors during development.
+
 # Support
 
 If you have trouble using this library, do not hesitate to open an issue. I am always here to help.
