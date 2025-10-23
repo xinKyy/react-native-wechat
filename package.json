@@ -1,6 +1,6 @@
 {
-    "name": "native-wechat",
-    "version": "1.0.21",
+    "name": "xinkyy-react-native-wechat",
+    "version": "1.0.22",
     "description": "A React Native library for supporting Wechat APIs on Android and iOS",
     "react-native": "src/index",
     "main": "dist/index.mjs",
@@ -26,8 +26,8 @@
         "ios",
         "android"
     ],
-    "repository": "https://github.com/Hector-Chong/native-wechat",
-    "author": "Héctor Chong <i@hector.im> (https://github.com/Hector-Chong)",
+    "repository": "https://github.com/xinKyy/react-native-wechat.git",
+    "author": "xinkyy",
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/Hector-Chong/native-wechat/issues"
