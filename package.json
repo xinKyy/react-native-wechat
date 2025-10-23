@@ -1,5 +1,5 @@
 {
-    "name": "xinkyy-react-native-wechat",
+    "name": "@xinkyy/react-native-wechat",
     "version": "1.0.22",
     "description": "A React Native library for supporting Wechat APIs on Android and iOS",
     "react-native": "src/index",
